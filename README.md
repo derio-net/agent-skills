@@ -32,6 +32,12 @@ does not redistribute them.
 **Original (tracked).** Authored here. Each gets an explicit `!skills/<name>/`
 allow-line in `.gitignore`.
 
+A third pattern exists locally: skills whose source of truth is **another local
+repo** (a plugin or project repo) appear here as untracked symlinks, so every
+agent still discovers them through this one canonical directory. They are
+committed in their own repo, not this one — and the symlinks stay untracked
+because they embed machine-local absolute-ish paths.
+
 | Skill | What it does |
 |-------|--------------|
 | `browser-screenshot` | Generic URL→PNG capture by driving a real browser via [browser-harness](https://github.com/browser-use/browser-harness) over CDP — viewport / full-page / element-crop modes, forced dark mode, host-aware credential resolution with a pluggable form-login. |
