@@ -38,6 +38,7 @@ Exit codes
   0  screenshot written
   2  bad/missing parameters
   3  AUTH_WALL — a login form was detected and no login config was supplied
+  4  LOGIN_FAILED — form login submitted but a password field is still present
 """
 import base64
 import json
@@ -123,17 +124,37 @@ def do_login():
              f"in os.environ and /proc/1/environ)")
     new_tab(login_url)
     wait_for_load()
-    # Set values via the DOM and fire input events so reactive forms register
-    # them. The secret rides inside this Runtime.evaluate expression — acceptable
-    # for local automation; we never echo it ourselves.
+    time.sleep(1.0)  # let the SPA hydrate the form
+    # Fill via the NATIVE value setter, then fire input/change. React-controlled
+    # forms (Grafana, most modern dashboards) track values through their own
+    # property descriptor — assigning el.value directly never reaches the
+    # framework's onChange and the form submits empty. The secret rides inside
+    # this Runtime.evaluate expression — acceptable for local automation; we
+    # never echo it ourselves.
     js("(function(u,p){"
+       "function setVal(el,v){"
+       "  var d=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value');"
+       "  d.set.call(el,v);"
+       "  el.dispatchEvent(new Event('input',{bubbles:true}));"
+       "  el.dispatchEvent(new Event('change',{bubbles:true}));}"
        f"var U=document.querySelector({json.dumps(user_sel)});"
        f"var P=document.querySelector({json.dumps(pass_sel)});"
-       "if(U){U.value=u;U.dispatchEvent(new Event('input',{bubbles:true}));}"
-       "if(P){P.value=p;P.dispatchEvent(new Event('input',{bubbles:true}));}"
+       "if(U)setVal(U,u);if(P)setVal(P,p);"
        f"}})({json.dumps(user)},{json.dumps(pwd)})")
+    time.sleep(0.3)
     js(f"document.querySelector({json.dumps(submit_sel)}).click()")
     wait_for_load()
+    time.sleep(1.5)  # post-login redirect/render
+    # Verify it actually worked — a lingering password field means the login
+    # failed; bail loudly rather than capturing blank/login frames.
+    if has_password_field():
+        print("LOGIN_FAILED: a password field is still present after submitting "
+              "the form — wrong selectors or rejected credentials.", file=sys.stderr)
+        try:
+            close_tab()
+        except Exception:
+            pass
+        sys.exit(4)
     print("logged in via form", file=sys.stderr)
     return True
 
