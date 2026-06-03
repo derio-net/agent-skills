@@ -23,6 +23,8 @@ Parameters (env vars)
   SHOT_WAIT_MS      extra settle wait after load, ms    (default: 400)
   SHOT_WAIT_SELECTOR  wait until this selector exists before capturing
   SHOT_MAX_DIM      downscale longest side to this many px (viewport/full)
+  SHOT_AUTH_OK      "1" = a login form is acceptable content (e.g. the shot
+                    IS the login page); skips the AUTH_WALL bail-out
 
 Login (all optional; supply together to auto-fill a form before capturing)
   SHOT_LOGIN_URL    navigate here first and log in
@@ -171,8 +173,9 @@ if WAIT_MS:
     time.sleep(WAIT_MS / 1000.0)
 
 # Auth handling: log in if configured, else stop loudly on a login wall so the
-# caller can decide — never guess credentials.
-if has_password_field():
+# caller can decide — never guess credentials. SHOT_AUTH_OK=1 means the login
+# page itself is the intended subject, so don't treat it as a wall.
+if os.environ.get("SHOT_AUTH_OK") != "1" and has_password_field():
     if not do_login():
         print("AUTH_WALL: a login form was detected and no SHOT_LOGIN_* config "
               "was supplied. Provide login selectors + credential env-var names, "
