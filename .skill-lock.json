@@ -1,0 +1,133 @@
+{
+  "version": 3,
+  "skills": {
+    "agent-md-refactor": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/agent-md-refactor/SKILL.md",
+      "skillFolderHash": "89a8fede359cb48c66f1af44c5aa8fc07b82cded",
+      "installedAt": "2026-06-01T16:43:43.806Z",
+      "updatedAt": "2026-06-01T16:43:43.806Z"
+    },
+    "crafting-effective-readmes": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/crafting-effective-readmes/SKILL.md",
+      "skillFolderHash": "72e2a4d89c5a14b762cfc58e3bbd7fd63e9642b0",
+      "installedAt": "2026-06-01T16:43:43.808Z",
+      "updatedAt": "2026-06-01T16:43:43.808Z"
+    },
+    "database-schema-designer": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/database-schema-designer/SKILL.md",
+      "skillFolderHash": "aaedacc8d3da73b0bbc02f75dc22d2854371c3dd",
+      "installedAt": "2026-06-01T16:43:43.809Z",
+      "updatedAt": "2026-06-01T16:43:43.809Z"
+    },
+    "design-system-starter": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/design-system-starter/SKILL.md",
+      "skillFolderHash": "57ed5e3c57ec410c17d13786c7878645910d8572",
+      "installedAt": "2026-06-01T16:43:43.810Z",
+      "updatedAt": "2026-06-01T16:43:43.810Z"
+    },
+    "difficult-workplace-conversations": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/difficult-workplace-conversations/SKILL.md",
+      "skillFolderHash": "caa0f9634c627de6c505479ebcb92bdd1ce28038",
+      "installedAt": "2026-06-01T16:43:43.811Z",
+      "updatedAt": "2026-06-01T16:43:43.811Z"
+    },
+    "game-changing-features": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/game-changing-features/SKILL.md",
+      "skillFolderHash": "3538ed17db233eedc52b8039d43172313c88d842",
+      "installedAt": "2026-06-01T16:43:43.812Z",
+      "updatedAt": "2026-06-01T16:43:43.812Z"
+    },
+    "humanizer": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/humanizer/SKILL.md",
+      "skillFolderHash": "004c1998fffe4d5cd4535123d65cf9fb1a107b64",
+      "installedAt": "2026-06-01T16:43:43.813Z",
+      "updatedAt": "2026-06-01T16:43:43.813Z"
+    },
+    "lesson-learned": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/lesson-learned/SKILL.md",
+      "skillFolderHash": "6ab6847ffef7f50b70aa1d637c75a167387b6c7f",
+      "installedAt": "2026-06-01T16:43:43.813Z",
+      "updatedAt": "2026-06-01T16:43:43.813Z"
+    },
+    "mermaid-diagrams": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/mermaid-diagrams/SKILL.md",
+      "skillFolderHash": "1b7a962715838d762fe4b34701d797d1d57496cd",
+      "installedAt": "2026-06-01T16:43:43.814Z",
+      "updatedAt": "2026-06-01T16:43:43.814Z"
+    },
+    "plugin-forge": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/plugin-forge/SKILL.md",
+      "skillFolderHash": "85abb40bbb81ea328e3e154f70903dda13efbc7b",
+      "installedAt": "2026-06-01T16:43:43.816Z",
+      "updatedAt": "2026-06-01T16:43:43.816Z"
+    },
+    "writing-clearly-and-concisely": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/softaworks/agent-toolkit.git",
+      "skillPath": "skills/writing-clearly-and-concisely/SKILL.md",
+      "skillFolderHash": "4bb2d919b567277219f7a18358bd05e0a1679a77",
+      "installedAt": "2026-06-01T16:43:43.817Z",
+      "updatedAt": "2026-06-01T16:43:43.817Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "3013fdeb8a11b10b1eb795ec3ae8bfca38f7c26d",
+      "installedAt": "2026-06-01T16:43:50.796Z",
+      "updatedAt": "2026-06-01T16:43:50.796Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "dexto",
+    "firebender",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-cli",
+    "opencode",
+    "warp",
+    "zed",
+    "claude-code"
+  ]
+}

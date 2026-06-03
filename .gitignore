@@ -1,0 +1,14 @@
+# Third-party skills are installer-managed and reproducible — they are NOT
+# ours to redistribute (license belongs to their authors). Provenance lives in
+# .skill-lock.json (skills CLI) or a per-skill .skillfish.json (skillfish).
+# Reinstall from those records; never commit the content here.
+skills/*
+
+# Own, original skills — explicitly tracked. Add a `!skills/<name>/` line
+# when authoring a new skill (and only after a privacy pass — this repo is public).
+!skills/browser-screenshot/
+!skills/homepage-icon-finder/
+
+# Python bytecode from compile checks
+__pycache__/
+*.pyc
