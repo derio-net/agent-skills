@@ -90,6 +90,13 @@ def resolve_cred(envvar):
     return None
 
 
+def goto(u):
+    """Navigate the CURRENT tab and wait — keeps emulation + cookies, avoids
+    tab leaks and the reload-vs-JS-redirect CDP race."""
+    cdp("Page.navigate", url=u)
+    wait_for_load()
+
+
 def apply_emulation():
     # browser-harness's cdp() takes CDP params as kwargs, NOT a positional dict
     # (cdp(method, session_id=None, **params)) — a dict 2nd arg binds to
@@ -122,8 +129,7 @@ def do_login():
     if not user or not pwd:
         fail(f"credential not found in env (looked for ${user_var} / ${pass_var} "
              f"in os.environ and /proc/1/environ)")
-    new_tab(login_url)
-    wait_for_load()
+    goto(login_url)
     time.sleep(1.0)  # let the SPA hydrate the form
     # Fill via the NATIVE value setter, then fire input/change. React-controlled
     # forms (Grafana, most modern dashboards) track values through their own
@@ -176,22 +182,26 @@ def capture_element(out):
         f.write(base64.b64decode(res["data"]))
 
 
+def settle():
+    if WAIT_SELECTOR:
+        for _ in range(50):  # up to ~5s
+            if js(f"!!document.querySelector({json.dumps(WAIT_SELECTOR)})"):
+                break
+            time.sleep(0.1)
+    if WAIT_MS:
+        time.sleep(WAIT_MS / 1000.0)
+
+
 # --- drive the browser ---------------------------------------------------
-# Open the tab, apply width/theme, then reload so the page lays out at the
-# emulated width and reads the dark media query at load time.
-new_tab(URL)
+# Open a blank tab, apply width/theme emulation FIRST, then navigate once.
+# Never reload a freshly-opened target page: auth-walled SPAs JS-redirect to
+# /login on load, and a reload racing that redirect kills the CDP session
+# ("Inspected target navigated or closed").
+new_tab("about:blank")
 wait_for_load()
 apply_emulation()
-cdp("Page.reload")
-wait_for_load()
-
-if WAIT_SELECTOR:
-    for _ in range(50):  # up to ~5s
-        if js(f"!!document.querySelector({json.dumps(WAIT_SELECTOR)})"):
-            break
-        time.sleep(0.1)
-if WAIT_MS:
-    time.sleep(WAIT_MS / 1000.0)
+goto(URL)
+settle()
 
 # Auth handling: log in if configured, else stop loudly on a login wall so the
 # caller can decide — never guess credentials. SHOT_AUTH_OK=1 means the login
@@ -206,14 +216,9 @@ if os.environ.get("SHOT_AUTH_OK") != "1" and has_password_field():
         except Exception:
             pass
         sys.exit(3)
-    # back to the real target after logging in
-    new_tab(URL)
-    wait_for_load()
-    apply_emulation()
-    cdp("Page.reload")
-    wait_for_load()
-    if WAIT_MS:
-        time.sleep(WAIT_MS / 1000.0)
+    # back to the real target after logging in (same tab — session cookie set)
+    goto(URL)
+    settle()
 
 kwargs = {}
 if MAX_DIM:
