@@ -50,6 +50,7 @@ list. The common ones:
 | `SHOT_MODE` | `viewport` \| `full` \| `element` | `viewport` |
 | `SHOT_SELECTOR` | CSS selector (required for `element`) | — |
 | `SHOT_WIDTH` | viewport CSS width | `1200` |
+| `SHOT_HEIGHT` | viewport CSS height | `900` |
 | `SHOT_SCALE` | deviceScaleFactor (2 = crisper, ~4× bytes) | `1` |
 | `SHOT_DARK` | `1` forces `prefers-color-scheme: dark` | off |
 | `SHOT_WAIT_SELECTOR` | wait until this element exists | — |
@@ -79,8 +80,16 @@ process. If a lifecycle wrapper exists, always pair the begin with the end.
 
 Add `SHOT_DARK=1` when the convention prefers dark (most dashboards, and the
 Frank/blog-craft screenshot style). Prefer `SHOT_WAIT_SELECTOR` over a blind
-sleep when a known element marks "the data has rendered" (e.g. a Grafana panel's
-`.panel-content`), so you don't capture a spinner.
+sleep when a known element marks "the data has rendered" (e.g. Grafana's
+`[data-viz-panel-key]`), so you don't capture a spinner.
+
+**For SPA dashboards a wait selector is mandatory, not optional.** Apps that
+render panels asynchronously (Grafana is the canonical case) will happily give
+you a *valid PNG of an empty dark rectangle* if you shoot before the data
+arrives — `file` says PNG, the byte count looks plausible, and only looking at
+the image catches it. Set `SHOT_WAIT_SELECTOR` on a data-bearing element plus a
+few seconds of `SHOT_WAIT_MS`, and eyeball the first capture of any app you
+haven't shot before.
 
 ### Step 3 — Capture (and authenticate if needed)
 
@@ -103,9 +112,19 @@ SHOT_USER_ENVVAR="GRAFANA_ADMIN_USER" SHOT_PASS_ENVVAR="GRAFANA_ADMIN_PASSWORD" 
 ```
 
 The script resolves each credential from `os.environ` first, then
-`/proc/1/environ` (the secure-pod fallback), and never echoes it. SSO redirect
-flows that can't be driven by a simple username/password form are out of scope
-for v1 — stop and tell the user which target needs a richer recipe.
+`/proc/1/environ` (the secure-pod fallback), and never echoes it.
+
+**Token-only login forms** (a single "API token" / "access token" input, no
+username): point `SHOT_USER_SEL` *and* `SHOT_PASS_SEL` at the same input and put
+the token in the password env var — the filler sets the user value first and the
+password value last, so the token wins.
+
+**Multi-stage / SSO login flows** (identification page → separate password page,
+or an IdP redirect) can't be driven by the single-form filler and are out of
+scope for v1 — and hand-typing credentials is never the fallback. The sanctioned
+pattern: ask the user to **log in manually** in the open browser tab, then run
+the capture with no `SHOT_LOGIN_*` config at all — it rides the now-authenticated
+cookie session. This is the normal path, not a workaround.
 
 If credentials aren't already in the environment, **do not** ask the user to
 paste them into the chat or read them off a screenshot. Tell them which env var
@@ -137,5 +156,20 @@ those too.
 - **Element mode** uses CDP `Page.captureScreenshot` with a clip computed from
   the selector's bounding box, so it can capture a region taller than the
   viewport without scroll-stitching.
+- **`SHOT_MODE=full` breaks on UIs that virtualize off-screen content.** The
+  scroll-stitch only sees what the app has mounted, so virtualizing dashboards
+  (Grafana panels, long virtual lists) stitch empty gaps where content should
+  be. Workaround: stay in `viewport` mode with a tall `SHOT_HEIGHT` sized to
+  the content instead of `full`.
+- **`SHOT_DARK` only affects apps that respect `prefers-color-scheme`.** Apps
+  with their own theme system (ArgoCD, many admin UIs) ignore the emulation
+  entirely — switch the theme in the app's own settings, or accept the default.
+  Apps that *do* follow the OS scheme (n8n, most modern SPAs) work as expected.
+- **Secret-bearing pages: capture to `/tmp` first.** When the target can show
+  credentials or other sensitive values (secret managers, env editors), write
+  the shot to a temp path, verify the values are actually masked / crop them
+  out, and only then copy the file to its destination. Also scan list-style
+  views (repo explorers, folder listings) for names that shouldn't be
+  published before the image leaves `/tmp`.
 - **Never type credentials read from a screenshot or from chat.** Credentials
   come from the host environment by name, or the run stops.
