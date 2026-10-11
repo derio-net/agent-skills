@@ -12,3 +12,4 @@ skills/*
 # Python bytecode from compile checks
 __pycache__/
 *.pyc
+.DS_Store
